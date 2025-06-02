@@ -9,6 +9,7 @@ import TransactionHistory from '@/components/TransactionHistory';
 import QuickAmounts from '@/components/QuickAmounts';
 import Calculator from '@/components/Calculator';
 import IncomeExpenseButtons from '@/components/IncomeExpenseButtons';
+
 const Index = () => {
   const [balance, setBalance] = useState(8300000);
   const [showForm, setShowForm] = useState(false);
@@ -95,7 +96,8 @@ const Index = () => {
   const handleQuickAmountInput = () => {
     setShowCalculator(true);
   };
-  return <div className="min-h-screen bg-gray-900 text-white">
+  return (
+    <div className="min-h-screen bg-gray-900 text-white">
       <div className="max-w-md mx-auto relative">
         {/* Header */}
         <div className="flex items-center justify-between p-6 pt-12">
@@ -103,31 +105,31 @@ const Index = () => {
             <Wallet className="w-6 h-6 text-green-400" />
             <h1 className="text-xl font-semibold">Финансы</h1>
           </div>
-          
         </div>
 
         {/* Balance Section */}
         <BalanceCard balance={balance} />
 
-        {/* Income/Expense Buttons */}
-        <IncomeExpenseButtons onIncomeClick={handleIncomeClick} onExpenseClick={handleExpenseClick} />
-
         {/* Quick Amount Selection */}
         <QuickAmounts onAmountSelect={handleQuickAmountInput} />
+
+        {/* Income/Expense Buttons */}
+        <IncomeExpenseButtons onIncomeClick={handleIncomeClick} onExpenseClick={handleExpenseClick} />
 
         {/* Calculator */}
         {showCalculator && <Calculator onAmountSet={handleAmountSet} onClose={() => setShowCalculator(false)} />}
 
         {/* Transaction Form */}
-        {showForm && <div className="fixed inset-0 bg-black/50 flex items-end z-50 animate-fade-in">
+        {showForm && (
+          <div className="fixed inset-0 bg-black/50 flex items-end z-50 animate-fade-in">
             <TransactionForm onSubmit={addTransaction} onClose={() => setShowForm(false)} />
-          </div>}
+          </div>
+        )}
 
         {/* Income/Expense Toggle */}
         <div className="px-6 mb-6">
           <Tabs defaultValue="overview" className="w-full">
             <TabsList className="grid w-full grid-cols-2 bg-gray-800 border-gray-700">
-              
               <TabsTrigger value="history" className="data-[state=active]:bg-gray-700">
                 <Calendar className="w-4 h-4 mr-2" />
                 История
@@ -164,6 +166,8 @@ const Index = () => {
           </Tabs>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default Index;
