@@ -2,17 +2,20 @@
 import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Plus, TrendingUp, TrendingDown, Calendar, Wallet } from 'lucide-react';
 import BalanceCard from '@/components/BalanceCard';
 import TransactionForm from '@/components/TransactionForm';
 import TransactionHistory from '@/components/TransactionHistory';
 import QuickAmounts from '@/components/QuickAmounts';
+import Calculator from '@/components/Calculator';
+import IncomeExpenseButtons from '@/components/IncomeExpenseButtons';
 
 const Index = () => {
   const [balance, setBalance] = useState(8300000);
   const [showForm, setShowForm] = useState(false);
+  const [showCalculator, setShowCalculator] = useState(false);
+  const [transactionType, setTransactionType] = useState<'income' | 'expense'>('income');
   const [transactions, setTransactions] = useState([
     { id: 1, date: '21', dayName: 'Сегодня', month: 'Март 2025', income: 4000, expense: 23000 },
     { id: 2, date: '19', dayName: 'Вчера', month: 'Март 2025', income: 4000, expense: 23000 },
@@ -37,6 +40,36 @@ const Index = () => {
     setShowForm(false);
   };
 
+  const handleIncomeClick = () => {
+    setTransactionType('income');
+    setShowCalculator(true);
+  };
+
+  const handleExpenseClick = () => {
+    setTransactionType('expense');
+    setShowCalculator(true);
+  };
+
+  const handleAmountSet = (amount: number) => {
+    const today = new Date();
+    const newTransaction = {
+      id: transactions.length + 1,
+      date: today.getDate().toString(),
+      dayName: 'Сегодня',
+      month: today.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' }),
+      income: transactionType === 'income' ? amount : 0,
+      expense: transactionType === 'expense' ? amount : 0,
+    };
+
+    setTransactions([newTransaction, ...transactions]);
+    setBalance(prev => transactionType === 'income' ? prev + amount : prev - amount);
+    setShowCalculator(false);
+  };
+
+  const handleQuickAmountInput = () => {
+    setShowCalculator(true);
+  };
+
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <div className="max-w-md mx-auto relative">
@@ -59,8 +92,22 @@ const Index = () => {
         {/* Balance Section */}
         <BalanceCard balance={balance} />
 
+        {/* Income/Expense Buttons */}
+        <IncomeExpenseButtons 
+          onIncomeClick={handleIncomeClick}
+          onExpenseClick={handleExpenseClick}
+        />
+
         {/* Quick Amount Selection */}
-        <QuickAmounts onAmountSelect={(amount) => console.log('Selected:', amount)} />
+        <QuickAmounts onAmountSelect={handleQuickAmountInput} />
+
+        {/* Calculator */}
+        {showCalculator && (
+          <Calculator
+            onAmountSet={handleAmountSet}
+            onClose={() => setShowCalculator(false)}
+          />
+        )}
 
         {/* Transaction Form */}
         {showForm && (
