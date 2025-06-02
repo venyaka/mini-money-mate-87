@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { X, Delete } from 'lucide-react';
+import { X, Delete, TrendingUp, TrendingDown } from 'lucide-react';
 
 interface CalculatorProps {
   onAmountSet: (amount: number) => void;
@@ -12,6 +12,7 @@ interface CalculatorProps {
 const Calculator: React.FC<CalculatorProps> = ({ onAmountSet, onClose }) => {
   const [display, setDisplay] = useState('0');
   const [isNewNumber, setIsNewNumber] = useState(true);
+  const [transactionType, setTransactionType] = useState<'income' | 'expense'>('income');
 
   const handleNumber = (num: string) => {
     if (isNewNumber) {
@@ -73,6 +74,34 @@ const Calculator: React.FC<CalculatorProps> = ({ onAmountSet, onClose }) => {
               className="text-gray-400 hover:text-white"
             >
               <X className="w-5 h-5" />
+            </Button>
+          </div>
+
+          {/* Transaction Type Selector */}
+          <div className="grid grid-cols-2 gap-2 p-1 bg-gray-700 rounded-xl mb-6">
+            <Button
+              type="button"
+              onClick={() => setTransactionType('income')}
+              className={`py-3 rounded-lg transition-all ${
+                transactionType === 'income'
+                  ? 'bg-green-500 text-black hover:bg-green-600'
+                  : 'bg-transparent text-white hover:bg-gray-600'
+              }`}
+            >
+              <TrendingUp className="w-4 h-4 mr-2" />
+              Доход
+            </Button>
+            <Button
+              type="button"
+              onClick={() => setTransactionType('expense')}
+              className={`py-3 rounded-lg transition-all ${
+                transactionType === 'expense'
+                  ? 'bg-red-500 text-white hover:bg-red-600'
+                  : 'bg-transparent text-white hover:bg-gray-600'
+              }`}
+            >
+              <TrendingDown className="w-4 h-4 mr-2" />
+              Расход
             </Button>
           </div>
 
