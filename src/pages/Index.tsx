@@ -127,10 +127,7 @@ const Index = () => {
         <div className="px-6 mb-6">
           <Tabs defaultValue="overview" className="w-full">
             <TabsList className="grid w-full grid-cols-2 bg-gray-800 border-gray-700">
-              <TabsTrigger value="overview" className="data-[state=active]:bg-green-500 data-[state=active]:text-black">
-                <TrendingUp className="w-4 h-4 mr-2" />
-                Обзор
-              </TabsTrigger>
+              
               <TabsTrigger value="history" className="data-[state=active]:bg-gray-700">
                 <Calendar className="w-4 h-4 mr-2" />
                 История
