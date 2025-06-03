@@ -25,7 +25,7 @@ const QuickAmounts: React.FC<QuickAmountsProps> = ({ onAmountSelect }) => {
               key={amount}
               variant="outline"
               onClick={() => onAmountSelect(amount)}
-              className="bg-transparent border-green-400 text-green-400 hover:bg-green-400 hover:text-black transition-all duration-200 rounded-xl px-4 py-2"
+              className="bg-black border-gray-600 text-white hover:bg-gray-900 hover:text-white transition-all duration-200 rounded-xl px-4 py-2"
             >
               {amount.toLocaleString()} ТНГ
             </Button>

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -85,7 +84,7 @@ const Calculator: React.FC<CalculatorProps> = ({ onAmountSet, onClose }) => {
               className={`py-3 rounded-lg transition-all ${
                 transactionType === 'income'
                   ? 'bg-green-500 text-black hover:bg-green-600'
-                  : 'bg-transparent text-white hover:bg-gray-600'
+                  : 'bg-black text-white hover:bg-gray-900'
               }`}
             >
               <TrendingUp className="w-4 h-4 mr-2" />
@@ -97,7 +96,7 @@ const Calculator: React.FC<CalculatorProps> = ({ onAmountSet, onClose }) => {
               className={`py-3 rounded-lg transition-all ${
                 transactionType === 'expense'
                   ? 'bg-red-500 text-white hover:bg-red-600'
-                  : 'bg-transparent text-white hover:bg-gray-600'
+                  : 'bg-black text-white hover:bg-gray-900'
               }`}
             >
               <TrendingDown className="w-4 h-4 mr-2" />
@@ -125,7 +124,7 @@ const Calculator: React.FC<CalculatorProps> = ({ onAmountSet, onClose }) => {
                 } else if (btn === 'OK') {
                   buttonClass += "bg-green-500 hover:bg-green-600 text-black col-span-2";
                 } else {
-                  buttonClass += "bg-gray-600 hover:bg-gray-500 text-white";
+                  buttonClass += "bg-black hover:bg-gray-900 text-white border border-gray-600";
                 }
 
                 return (

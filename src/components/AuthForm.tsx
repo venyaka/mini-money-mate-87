@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -82,7 +81,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onAuthSuccess }) => {
               className={`py-3 rounded-lg transition-all ${
                 isLogin
                   ? 'bg-green-500 text-black hover:bg-green-600'
-                  : 'bg-transparent text-white hover:bg-gray-600'
+                  : 'bg-black text-white hover:bg-gray-900'
               }`}
             >
               Вход
@@ -93,7 +92,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onAuthSuccess }) => {
               className={`py-3 rounded-lg transition-all ${
                 !isLogin
                   ? 'bg-green-500 text-black hover:bg-green-600'
-                  : 'bg-transparent text-white hover:bg-gray-600'
+                  : 'bg-black text-white hover:bg-gray-900'
               }`}
             >
               Регистрация
@@ -146,7 +145,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onAuthSuccess }) => {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-green-500 hover:bg-green-600 text-black font-semibold py-3 rounded-xl transition-colors"
+              className="w-full bg-black hover:bg-gray-900 text-white font-semibold py-3 rounded-xl transition-colors border border-green-400"
             >
               {loading ? "Загрузка..." : isLogin ? "Войти" : "Зарегистрироваться"}
             </Button>

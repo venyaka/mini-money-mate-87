@@ -45,7 +45,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onSubmit, onClose }) 
               className={`py-3 rounded-lg transition-all ${
                 type === 'income'
                   ? 'bg-green-500 text-black hover:bg-green-600'
-                  : 'bg-transparent text-white hover:bg-gray-600'
+                  : 'bg-black text-white hover:bg-gray-900'
               }`}
             >
               <TrendingUp className="w-4 h-4 mr-2" />
@@ -57,7 +57,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onSubmit, onClose }) 
               className={`py-3 rounded-lg transition-all ${
                 type === 'expense'
                   ? 'bg-red-500 text-white hover:bg-red-600'
-                  : 'bg-transparent text-white hover:bg-gray-600'
+                  : 'bg-black text-white hover:bg-gray-900'
               }`}
             >
               <TrendingDown className="w-4 h-4 mr-2" />
@@ -79,7 +79,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onSubmit, onClose }) 
 
           <Button
             type="submit"
-            className="w-full bg-green-500 hover:bg-green-600 text-black font-semibold py-4 rounded-xl transition-colors"
+            className="w-full bg-black hover:bg-gray-900 text-white font-semibold py-4 rounded-xl transition-colors border border-green-400"
           >
             Добавить
           </Button>
