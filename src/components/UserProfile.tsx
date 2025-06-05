@@ -2,7 +2,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { LogOut, User } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 interface UserProfileProps {
@@ -13,21 +12,12 @@ interface UserProfileProps {
 const UserProfile: React.FC<UserProfileProps> = ({ user, onLogout }) => {
   const { toast } = useToast();
 
-  const handleLogout = async () => {
-    try {
-      await supabase.auth.signOut();
-      toast({
-        title: "Выход выполнен",
-        description: "До свидания!",
-      });
-      onLogout();
-    } catch (error: any) {
-      toast({
-        title: "Ошибка",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
+  const handleLogout = () => {
+    toast({
+      title: "Выход выполнен",
+      description: "До свидания!",
+    });
+    onLogout();
   };
 
   const displayName = user?.user_metadata?.name || user?.email || 'Пользователь';
