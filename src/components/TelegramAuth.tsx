@@ -17,7 +17,7 @@ const TelegramAuth: React.FC<TelegramAuthProps> = ({ onAuthSuccess }) => {
   useEffect(() => {
     // Глобальная функция для обработки Telegram авторизации
     window.onTelegramAuth = (user: any) => {
-      const path = "http://localhost:8181";
+      const path = "https://51bb-195-245-96-68.ngrok-free.app";
       const authorizeProcessingUrl = "/api/authorize/login";
       
       fetch((path + authorizeProcessingUrl), {

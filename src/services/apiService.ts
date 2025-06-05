@@ -1,7 +1,7 @@
 
 import { UserRespDTO, BalanceDTO, TransactionDTO, TelegramAuthorizeReqDTO, Transaction } from '@/types/api';
 
-const API_BASE_URL = 'http://localhost:8181';
+const API_BASE_URL = 'https://51bb-195-245-96-68.ngrok-free.app';
 
 class ApiService {
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
