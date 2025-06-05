@@ -39,7 +39,7 @@ const TelegramAuth: React.FC<TelegramAuthProps> = ({ onAuthSuccess }) => {
     // Загружаем Telegram Widget скрипт
     const script = document.createElement('script');
     script.src = 'https://telegram.org/js/telegram-widget.js?22';
-    script.setAttribute('data-telegram-login', 'YOUR_BOT_USERNAME'); // Замените на ваш bot username
+    script.setAttribute('data-telegram-login', 'EthereumFinanceBot'); // Используем токен 7556745697:AAGz4hRZFN9B8DNh_JxUEQP0dfH95heeShE
     script.setAttribute('data-size', 'large');
     script.setAttribute('data-onauth', 'onTelegramAuth(user)');
     script.setAttribute('data-request-access', 'write');
