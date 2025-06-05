@@ -19,9 +19,13 @@ export interface TransactionDTO {
 }
 
 export interface TelegramAuthorizeReqDTO {
-  // Добавьте нужные поля для Telegram авторизации
+  id: number;
+  first_name?: string;
+  last_name?: string;
   username?: string;
-  password?: string;
+  photo_url?: string;
+  auth_date: number;
+  hash: string;
 }
 
 export interface Transaction extends TransactionDTO {

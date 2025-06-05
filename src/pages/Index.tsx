@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Calendar, Wallet } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import SpringAuthForm from '@/components/SpringAuthForm';
+import TelegramAuth from '@/components/TelegramAuth';
 import UserProfile from '@/components/UserProfile';
 import BalanceCard from '@/components/BalanceCard';
 import TransactionHistory from '@/components/TransactionHistory';
@@ -58,7 +58,7 @@ const Index = () => {
   }
 
   if (!user) {
-    return <SpringAuthForm onAuthSuccess={handleAuthSuccess} />;
+    return <TelegramAuth onAuthSuccess={handleAuthSuccess} />;
   }
 
   const displayName = user.firstName && user.lastName 
