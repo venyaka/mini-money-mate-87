@@ -1,50 +1,30 @@
 
-import React, { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import React, { useState } from 'react';
 import { Calendar, Wallet } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import AuthForm from '@/components/AuthForm';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import SpringAuthForm from '@/components/SpringAuthForm';
 import UserProfile from '@/components/UserProfile';
 import BalanceCard from '@/components/BalanceCard';
 import TransactionHistory from '@/components/TransactionHistory';
 import QuickAmounts from '@/components/QuickAmounts';
 import Calculator from '@/components/Calculator';
 import IncomeExpenseButtons from '@/components/IncomeExpenseButtons';
-import { useUserFinances } from '@/hooks/useUserFinances';
+import { useSpringAuth } from '@/hooks/useSpringAuth';
+import { useSpringFinances } from '@/hooks/useSpringFinances';
 
 const Index = () => {
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, loading: authLoading, logout } = useSpringAuth();
   const [showCalculator, setShowCalculator] = useState(false);
   const [transactionType, setTransactionType] = useState<'income' | 'expense'>('income');
 
-  const { balance, transactions, addTransaction } = useUserFinances(user?.id);
-
-  useEffect(() => {
-    // Проверяем текущую сессию
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    // Подписываемся на изменения аутентификации
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
+  const { balance, transactions, addTransaction } = useSpringFinances(user?.id);
 
   const handleAuthSuccess = () => {
-    // Пользователь будет обновлен автоматически через onAuthStateChange
+    // Пользователь будет обновлен автоматически через хук
   };
 
   const handleLogout = () => {
-    setUser(null);
+    logout();
   };
 
   const handleIncomeClick = () => {
@@ -66,7 +46,7 @@ const Index = () => {
     setShowCalculator(true);
   };
 
-  if (loading) {
+  if (authLoading) {
     return (
       <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
         <div className="flex items-center space-x-2">
@@ -78,14 +58,25 @@ const Index = () => {
   }
 
   if (!user) {
-    return <AuthForm onAuthSuccess={handleAuthSuccess} />;
+    return <SpringAuthForm onAuthSuccess={handleAuthSuccess} />;
   }
+
+  const displayName = user.firstName && user.lastName 
+    ? `${user.firstName} ${user.lastName}` 
+    : user.username || 'Пользователь';
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <div className="max-w-md mx-auto relative">
         {/* User Profile Header */}
-        <UserProfile user={user} onLogout={handleLogout} />
+        <UserProfile 
+          user={{
+            ...user,
+            user_metadata: { name: displayName },
+            email: user.username
+          }} 
+          onLogout={handleLogout} 
+        />
 
         {/* Balance Section */}
         <BalanceCard balance={balance} />
