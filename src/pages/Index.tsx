@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Calendar, Wallet } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import TelegramAuth from '@/components/TelegramAuth';
+import AuthContainer from '@/components/AuthContainer';
 import UserProfile from '@/components/UserProfile';
 import BalanceCard from '@/components/BalanceCard';
 import TransactionHistory from '@/components/TransactionHistory';
@@ -58,7 +58,7 @@ const Index = () => {
   }
 
   if (!user) {
-    return <TelegramAuth onAuthSuccess={handleAuthSuccess} />;
+    return <AuthContainer onAuthSuccess={handleAuthSuccess} />;
   }
 
   const displayName = user.firstName && user.lastName 

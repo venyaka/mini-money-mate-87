@@ -1,7 +1,7 @@
 
-import { UserRespDTO, BalanceDTO, TransactionDTO, TelegramAuthorizeReqDTO, Transaction } from '@/types/api';
+import { UserRespDTO, BalanceDTO, TransactionDTO, TelegramAuthorizeReqDTO, Transaction, UserAuthorizeReqDTO, RegisterReqDTO, TokenRespDTO } from '@/types/api';
 
-const API_BASE_URL = 'https://51bb-195-245-96-68.ngrok-free.app';
+const API_BASE_URL = 'https://sergofinance.com';
 
 class ApiService {
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
@@ -26,10 +26,30 @@ class ApiService {
   }
 
   // Auth
-  async login(credentials: TelegramAuthorizeReqDTO): Promise<{ redirectUrl: string }> {
+  async loginByTelegram(credentials: TelegramAuthorizeReqDTO): Promise<{ redirectUrl: string }> {
+    return this.request('/api/authorize/login-by-telegram', {
+      method: 'POST',
+      body: JSON.stringify(credentials),
+    });
+  }
+
+  async login(credentials: UserAuthorizeReqDTO): Promise<TokenRespDTO> {
     return this.request('/api/authorize/login', {
       method: 'POST',
       body: JSON.stringify(credentials),
+    });
+  }
+
+  async register(data: RegisterReqDTO): Promise<void> {
+    return this.request('/api/authorize/register', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async verificateCode(email: string): Promise<void> {
+    return this.request(`/api/authorize/verificateCode?email=${encodeURIComponent(email)}`, {
+      method: 'POST',
     });
   }
 
@@ -77,6 +97,11 @@ class ApiService {
       method: 'GET',
       body: JSON.stringify(type),
     });
+  }
+
+  // Utility
+  async getNgrokUrl(): Promise<string> {
+    return this.request('/api/ngrok');
   }
 }
 

@@ -1,10 +1,12 @@
 
 import React, { useEffect } from 'react';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Wallet } from 'lucide-react';
 
 interface TelegramAuthProps {
   onAuthSuccess: () => void;
+  onSwitchToLogin: () => void;
 }
 
 declare global {
@@ -13,12 +15,12 @@ declare global {
   }
 }
 
-const TelegramAuth: React.FC<TelegramAuthProps> = ({ onAuthSuccess }) => {
+const TelegramAuth: React.FC<TelegramAuthProps> = ({ onAuthSuccess, onSwitchToLogin }) => {
   useEffect(() => {
     // Глобальная функция для обработки Telegram авторизации
     window.onTelegramAuth = (user: any) => {
-      const path = "https://51bb-195-245-96-68.ngrok-free.app";
-      const authorizeProcessingUrl = "/api/authorize/login";
+      const path = "https://sergofinance.com";
+      const authorizeProcessingUrl = "/api/authorize/login-by-telegram";
       
       fetch((path + authorizeProcessingUrl), {
         method: 'POST',
@@ -39,7 +41,7 @@ const TelegramAuth: React.FC<TelegramAuthProps> = ({ onAuthSuccess }) => {
     // Загружаем Telegram Widget скрипт
     const script = document.createElement('script');
     script.src = 'https://telegram.org/js/telegram-widget.js?22';
-    script.setAttribute('data-telegram-login', 'EthereumFinanceBot'); // Используем токен 7556745697:AAGz4hRZFN9B8DNh_JxUEQP0dfH95heeShE
+    script.setAttribute('data-telegram-login', 'EthereumFinanceBot');
     script.setAttribute('data-size', 'large');
     script.setAttribute('data-onauth', 'onTelegramAuth(user)');
     script.setAttribute('data-request-access', 'write');
@@ -78,8 +80,18 @@ const TelegramAuth: React.FC<TelegramAuthProps> = ({ onAuthSuccess }) => {
             <p className="text-gray-400 mb-6">
               Используйте свой Telegram аккаунт для входа в приложение
             </p>
-            <div id="telegram-login-container" className="flex justify-center">
+            <div id="telegram-login-container" className="flex justify-center mb-6">
               {/* Сюда будет вставлен Telegram Widget */}
+            </div>
+            
+            <div className="mt-6">
+              <Button
+                variant="ghost"
+                className="w-full text-gray-400 hover:text-white"
+                onClick={onSwitchToLogin}
+              >
+                Войти по логину и паролю
+              </Button>
             </div>
           </div>
         </Card>
