@@ -1,29 +1,14 @@
 
-import {
-  UserRespDTO,
-  BalanceDTO,
-  TransactionDTO,
-  TelegramAuthorizeReqDTO,
-  Transaction,
-} from '@/types/api';
+import { UserRespDTO, BalanceDTO, TransactionDTO, TelegramAuthorizeReqDTO, Transaction, UserAuthorizeReqDTO, RegisterReqDTO, TokenRespDTO } from '@/types/api';
 import { API_ROUTES } from '@/constants/apiRoutes';
-import {fetchNgrokUrl} from "@/api/api.ts";
 
+
+const API_BASE_URL = 'https://sergofinance.com';
 
 class ApiService {
-  private ngrokUrl: string | null = null;
-
-  private async getApiBaseUrl(): Promise<string> {
-    if (!this.ngrokUrl) {
-      this.ngrokUrl = await fetchNgrokUrl();
-    }
-    return this.ngrokUrl;
-  }
-
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const baseUrl = await this.getApiBaseUrl();
-    const url = `${baseUrl}${endpoint}`;
-
+    const url = `${API_BASE_URL}${endpoint}`;
+    
     const config: RequestInit = {
       credentials: 'include',
       headers: {
@@ -43,25 +28,45 @@ class ApiService {
   }
 
   // Auth
-  async login(credentials: TelegramAuthorizeReqDTO): Promise<{ redirectUrl: string }> {
-    return this.request(API_ROUTES.AUTH.LOGIN, {
+  async loginByTelegram(credentials: TelegramAuthorizeReqDTO): Promise<{ redirectUrl: string }> {
+    return this.request('/api/authorize/login-by-telegram', {
       method: 'POST',
       body: JSON.stringify(credentials),
     });
   }
 
+  async login(credentials: UserAuthorizeReqDTO): Promise<TokenRespDTO> {
+    return this.request('/api/authorize/login', {
+      method: 'POST',
+      body: JSON.stringify(credentials),
+    });
+  }
+
+  async register(data: RegisterReqDTO): Promise<void> {
+    return this.request('/api/authorize/register', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async verificateCode(email: string): Promise<void> {
+    return this.request(`/api/authorize/verificateCode?email=${encodeURIComponent(email)}`, {
+      method: 'POST',
+    });
+  }
+
   // User
   async getCurrentUser(): Promise<UserRespDTO> {
-    return this.request(API_ROUTES.USER.ME);
+    return this.request('/api/users/me');
   }
 
   // Balance
   async getBalance(userId: number): Promise<BalanceDTO> {
-    return this.request(API_ROUTES.BALANCE.BY_USER_ID(userId));
+    return this.request(`/api/balance/${userId}`);
   }
 
   async updateBalance(balance: BalanceDTO): Promise<BalanceDTO> {
-    return this.request(API_ROUTES.BALANCE.ROOT, {
+    return this.request('/api/balance', {
       method: 'PUT',
       body: JSON.stringify(balance),
     });
@@ -69,31 +74,36 @@ class ApiService {
 
   // Transactions
   async getAllTransactions(): Promise<TransactionDTO[]> {
-    return this.request(API_ROUTES.TRANSACTIONS.ROOT);
+    return this.request('/api/transactions');
   }
 
   async createTransaction(transaction: TransactionDTO): Promise<TransactionDTO> {
-    return this.request(API_ROUTES.TRANSACTIONS.ROOT, {
+    return this.request('/api/transactions', {
       method: 'POST',
       body: JSON.stringify(transaction),
     });
   }
 
   async deleteTransaction(id: number): Promise<void> {
-    return this.request(API_ROUTES.TRANSACTIONS.BY_ID(id), {
+    return this.request(`/api/transactions/${id}`, {
       method: 'DELETE',
     });
   }
 
   async getUserTransactions(userId: number): Promise<Transaction[]> {
-    return this.request(API_ROUTES.TRANSACTIONS.BY_USER_ID(userId));
+    return this.request(`/api/transactions/user/${userId}`);
   }
 
   async getUserTransactionTotal(userId: number, type: 'INCOME' | 'EXPENSE'): Promise<number> {
-    return this.request(API_ROUTES.TRANSACTIONS.USER_TOTAL(userId), {
+    return this.request(`/api/transactions/user/${userId}/total`, {
       method: 'GET',
       body: JSON.stringify(type),
     });
+  }
+
+  // Utility
+  async getNgrokUrl(): Promise<string> {
+    return this.request('/api/ngrok');
   }
 }
 

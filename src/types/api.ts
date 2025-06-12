@@ -28,6 +28,23 @@ export interface TelegramAuthorizeReqDTO {
   hash: string;
 }
 
+export interface UserAuthorizeReqDTO {
+  email: string;
+  password: string;
+}
+
+export interface RegisterReqDTO {
+  name: string;
+  surname: string;
+  password: string;
+  email: string;
+}
+
+export interface TokenRespDTO {
+  accessToken: string;
+  refreshToken: string;
+}
+
 export interface Transaction extends TransactionDTO {
   id?: number;
   userId?: number;
