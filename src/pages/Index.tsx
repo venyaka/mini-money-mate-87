@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Calendar, Wallet } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TelegramAuth from '@/components/TelegramAuth';
@@ -11,6 +11,7 @@ import Calculator from '@/components/Calculator';
 import IncomeExpenseButtons from '@/components/IncomeExpenseButtons';
 import { useSpringAuth } from '@/hooks/useSpringAuth';
 import { useSpringFinances } from '@/hooks/useSpringFinances';
+import {fetchNgrokUrl} from "@/api/api.ts";
 
 const Index = () => {
   const { user, loading: authLoading, logout } = useSpringAuth();
@@ -101,9 +102,9 @@ const Index = () => {
             </TabsList>
             
             <TabsContent value="history" className="mt-6">
-              <div className="max-h-96 overflow-y-auto">
-                <TransactionHistory transactions={transactions} />
-              </div>
+              {/*<div className="max-h-96 overflow-y-auto">*/}
+              {/*  <TransactionHistory transactions={transactions} />*/}
+              {/*</div>*/}
             </TabsContent>
           </Tabs>
         </div>
