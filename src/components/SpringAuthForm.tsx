@@ -7,7 +7,12 @@ interface SpringAuthFormProps {
 }
 
 const SpringAuthForm: React.FC<SpringAuthFormProps> = ({ onAuthSuccess }) => {
-  return <TelegramAuth onAuthSuccess={onAuthSuccess} />;
+  return (
+    <TelegramAuth 
+      onAuthSuccess={onAuthSuccess} 
+      onSwitchToLogin={() => {}} 
+    />
+  );
 };
 
 export default SpringAuthForm;
