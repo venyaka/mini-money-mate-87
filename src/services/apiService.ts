@@ -3,7 +3,8 @@ import { UserRespDTO, BalanceDTO, TransactionDTO, TelegramAuthorizeReqDTO, Trans
 import { API_ROUTES } from '@/constants/apiRoutes';
 
 
-const API_BASE_URL = 'https://sergofinance.com';
+const API_BASE_URL_PROD = 'https://sergofinance.com';
+const API_BASE_URL = 'http://localhost:8181';
 
 class ApiService {
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
