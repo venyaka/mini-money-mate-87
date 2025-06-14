@@ -40,9 +40,10 @@ export const useSpringAuth = () => {
 
       return response;
     } catch (error: any) {
+      const errorMessage = getErrorMessage(error.message);
       toast({
         title: "Ошибка входа",
-        description: error.message,
+        description: errorMessage,
         variant: "destructive",
       });
       throw error;
@@ -66,9 +67,34 @@ export const useSpringAuth = () => {
 
       return response;
     } catch (error: any) {
+      const errorMessage = getErrorMessage(error.message);
       toast({
         title: "Ошибка входа",
-        description: error.message,
+        description: errorMessage,
+        variant: "destructive",
+      });
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const register = async (data: any) => {
+    try {
+      setLoading(true);
+      await apiService.register(data);
+      
+      toast({
+        title: "Регистрация успешна",
+        description: "Проверьте почту и подтвердите аккаунт по ссылке в письме",
+      });
+
+      return true;
+    } catch (error: any) {
+      const errorMessage = getErrorMessage(error.message);
+      toast({
+        title: "Ошибка регистрации",
+        description: errorMessage,
         variant: "destructive",
       });
       throw error;
@@ -78,6 +104,7 @@ export const useSpringAuth = () => {
   };
 
   const logout = () => {
+    apiService.logout();
     setUser(null);
     toast({
       title: "Выход выполнен",
@@ -85,11 +112,27 @@ export const useSpringAuth = () => {
     });
   };
 
+  const getErrorMessage = (errorMessage: string): string => {
+    const errorMap: { [key: string]: string } = {
+      'USER_NOT_FOUND': 'Пользователь не найден',
+      'USER_NOT_VERIFICATED': 'Пользователь не верифицирован',
+      'NOT_CORRECT_VERIFICATION_CODE': 'Код верификации не корректен или не был запрошен',
+      'NOT_CORRECT_PASSWORD': 'Неверный пароль',
+      'NOT_CORRECT_REFRESH_TOKEN': 'Неверный рефреш токен',
+      'USER_ALREADY_EXISTS': 'Пользователь с такой почтой уже существует',
+      'USER_ALREADY_VERIFICATED': 'Пользователь уже был верифицирован',
+      'TRANSACTION_NOT_FOUND': 'Транзакция не найдена',
+    };
+
+    return errorMap[errorMessage] || errorMessage;
+  };
+
   return {
     user,
     loading,
     login,
     loginByTelegram,
+    register,
     logout,
     refreshUser: checkCurrentUser
   };
