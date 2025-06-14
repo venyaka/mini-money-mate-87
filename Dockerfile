@@ -17,16 +17,18 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM nginx:alpine
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install serve globally
+RUN npm install -g serve
 
 # Copy built assets from build stage
-COPY --from=build /app/dist /usr/share/nginx/html
+COPY --from=build /app/dist ./dist
 
-# Copy nginx configuration (optional)
-COPY nginx.conf /etc/nginx/nginx.conf
+# Expose port 5173
+EXPOSE 5173
 
-# Expose port 80
-EXPOSE 80
-
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Start serve
+CMD ["serve", "-s", "dist", "-l", "5173"]
