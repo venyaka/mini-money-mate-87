@@ -1,5 +1,5 @@
 
-import React, {useEffect, useState} from 'react';
+import React, { useState } from 'react';
 import { Calendar, Wallet } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AuthContainer from '@/components/AuthContainer';
@@ -11,7 +11,6 @@ import Calculator from '@/components/Calculator';
 import IncomeExpenseButtons from '@/components/IncomeExpenseButtons';
 import { useSpringAuth } from '@/hooks/useSpringAuth';
 import { useSpringFinances } from '@/hooks/useSpringFinances';
-import {fetchNgrokUrl} from "@/api/api.ts";
 
 const Index = () => {
   const { user, loading: authLoading, logout } = useSpringAuth();
@@ -62,15 +61,27 @@ const Index = () => {
     return <AuthContainer onAuthSuccess={handleAuthSuccess} />;
   }
 
-  const displayName = user.firstName && user.lastName
-    ? `${user.firstName} ${user.lastName}`
+  const displayName = user.firstName && user.lastName 
+    ? `${user.firstName} ${user.lastName}` 
     : user.username || 'Пользователь';
+
+  // Приводим транзакции к нужному формату для TransactionHistory
+  const formattedTransactions = transactions.map(transaction => ({
+    id: transaction.id!,
+    type: transaction.type === 'INCOME' ? 'income' : 'expense',
+    amount: transaction.amount,
+    date: transaction.date,
+    dayName: new Date(transaction.date).toLocaleDateString('ru-RU', { weekday: 'short' }),
+    month: new Date(transaction.date).toLocaleDateString('ru-RU', { month: 'short' }),
+    income: transaction.type === 'INCOME' ? transaction.amount : 0,
+    expense: transaction.type === 'EXPENSE' ? transaction.amount : 0,
+  }));
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <div className="max-w-md mx-auto relative">
         {/* User Profile Header */}
-        <UserProfile
+        <UserProfile 
           user={{
             ...user,
             user_metadata: { name: displayName },
@@ -103,7 +114,7 @@ const Index = () => {
             
             <TabsContent value="history" className="mt-6">
               {/*<div className="max-h-96 overflow-y-auto">*/}
-              {/*  <TransactionHistory transactions={transactions} />*/}
+              {/*  <TransactionHistory transactions={formattedTransactions} />*/}
               {/*</div>*/}
             </TabsContent>
           </Tabs>

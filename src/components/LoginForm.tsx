@@ -28,6 +28,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onAuthSuccess, onSwitchToTelegram
 
     try {
       await login({ email, password });
+      // Редирект на основную страницу после успешного логина
       onAuthSuccess();
     } catch (error) {
       // Ошибка уже обработана в хуке
