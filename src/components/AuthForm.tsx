@@ -7,7 +7,12 @@ interface AuthFormProps {
 }
 
 const AuthForm: React.FC<AuthFormProps> = ({ onAuthSuccess }) => {
-  return <TelegramAuth onAuthSuccess={onAuthSuccess} />;
+  return (
+    <TelegramAuth 
+      onAuthSuccess={onAuthSuccess} 
+      onSwitchToLogin={() => {}} 
+    />
+  );
 };
 
 export default AuthForm;
