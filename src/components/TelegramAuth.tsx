@@ -23,7 +23,7 @@ const TelegramAuth: React.FC<TelegramAuthProps> = ({ onAuthSuccess, onSwitchToLo
       const path = "http://localhost:8181";
       const authorizeProcessingUrl = "/api/authorize/login-by-telegram";
       
-      fetch((path + authorizeProcessingUrl), {
+      fetch((API_BASE_URL_PROD + authorizeProcessingUrl), {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         credentials: 'include', // Для работы с cookies
