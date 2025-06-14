@@ -15,6 +15,13 @@ export const useSpringFinances = (userId?: number) => {
     queryKey: ['balance', userId],
     queryFn: () => apiService.getBalance(userId!),
     enabled: !!userId,
+    retry: (failureCount, error: any) => {
+      // Не повторяем запрос если пользователь не найден
+      if (error?.message?.includes('USER_NOT_FOUND')) {
+        return false;
+      }
+      return failureCount < 3;
+    },
   });
 
   // Получение транзакций
@@ -22,6 +29,12 @@ export const useSpringFinances = (userId?: number) => {
     queryKey: ['transactions', userId],
     queryFn: () => apiService.getUserTransactions(userId!),
     enabled: !!userId,
+    retry: (failureCount, error: any) => {
+      if (error?.message?.includes('USER_NOT_FOUND')) {
+        return false;
+      }
+      return failureCount < 3;
+    },
   });
 
   // Мутация для добавления транзакции
@@ -36,9 +49,10 @@ export const useSpringFinances = (userId?: number) => {
       });
     },
     onError: (error: any) => {
+      const errorMessage = getErrorMessage(error.message);
       toast({
         title: "Ошибка",
-        description: error.message,
+        description: errorMessage,
         variant: "destructive",
       });
     },
@@ -58,6 +72,15 @@ export const useSpringFinances = (userId?: number) => {
     };
 
     addTransactionMutation.mutate(transaction);
+  };
+
+  const getErrorMessage = (errorMessage: string): string => {
+    const errorMap: { [key: string]: string } = {
+      'USER_NOT_FOUND': 'Пользователь не найден',
+      'TRANSACTION_NOT_FOUND': 'Транзакция не найдена',
+    };
+
+    return errorMap[errorMessage] || errorMessage;
   };
 
   return {

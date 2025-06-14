@@ -50,3 +50,12 @@ export interface Transaction extends TransactionDTO {
   userId?: number;
   created_at?: string;
 }
+
+export interface ApiError {
+  timestamp: string;
+  status: number;
+  error: string;
+  message: string;
+  path: string;
+  debugInfo?: any;
+}

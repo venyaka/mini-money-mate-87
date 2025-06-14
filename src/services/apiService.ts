@@ -1,16 +1,24 @@
 
-import { UserRespDTO, BalanceDTO, TransactionDTO, TelegramAuthorizeReqDTO, Transaction, UserAuthorizeReqDTO, RegisterReqDTO, TokenRespDTO } from '@/types/api';
+import { UserRespDTO, BalanceDTO, TransactionDTO, TelegramAuthorizeReqDTO, Transaction, UserAuthorizeReqDTO, RegisterReqDTO, TokenRespDTO, ApiError } from '@/types/api';
 
 const API_BASE_URL = 'https://sergofinance.com';
 
 class ApiService {
+  private getAuthHeaders(): HeadersInit {
+    const token = localStorage.getItem('accessToken');
+    return {
+      'Content-Type': 'application/json',
+      ...(token && { 'Authorization': token }),
+    };
+  }
+
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${API_BASE_URL}${endpoint}`;
     
     const config: RequestInit = {
-      credentials: 'include', // Для отправки cookies (JSESSIONID)
+      credentials: 'include',
       headers: {
-        'Content-Type': 'application/json',
+        ...this.getAuthHeaders(),
         ...options.headers,
       },
       ...options,
@@ -19,10 +27,25 @@ class ApiService {
     const response = await fetch(url, config);
     
     if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`);
+      let errorData: ApiError;
+      try {
+        errorData = await response.json();
+      } catch {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      // Используем сообщение от сервера или код ошибки
+      throw new Error(errorData.message || errorData.error || `HTTP ${response.status}`);
     }
 
-    return response.json();
+    // Проверяем, есть ли контент для парсинга
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      return response.json();
+    }
+    
+    // Возвращаем пустой объект для методов, которые ничего не возвращают
+    return {} as T;
   }
 
   // Auth
@@ -34,10 +57,20 @@ class ApiService {
   }
 
   async login(credentials: UserAuthorizeReqDTO): Promise<TokenRespDTO> {
-    return this.request('/api/authorize/login', {
+    const response = await this.request<TokenRespDTO>('/api/authorize/login', {
       method: 'POST',
       body: JSON.stringify(credentials),
     });
+    
+    // Сохраняем токены в localStorage
+    if (response.accessToken) {
+      localStorage.setItem('accessToken', response.accessToken);
+    }
+    if (response.refreshToken) {
+      localStorage.setItem('refreshToken', response.refreshToken);
+    }
+    
+    return response;
   }
 
   async register(data: RegisterReqDTO): Promise<void> {
@@ -102,6 +135,12 @@ class ApiService {
   // Utility
   async getNgrokUrl(): Promise<string> {
     return this.request('/api/ngrok');
+  }
+
+  // Logout
+  logout(): void {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
   }
 }
 

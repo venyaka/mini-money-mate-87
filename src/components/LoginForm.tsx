@@ -5,8 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Wallet, Eye, EyeOff } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { apiService } from '@/services/apiService';
+import { useSpringAuth } from '@/hooks/useSpringAuth';
 
 interface LoginFormProps {
   onAuthSuccess: () => void;
@@ -18,40 +17,20 @@ const LoginForm: React.FC<LoginFormProps> = ({ onAuthSuccess, onSwitchToTelegram
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const { toast } = useToast();
+  const { login, loading } = useSpringAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!email || !password) {
-      toast({
-        title: "Ошибка",
-        description: "Заполните все поля",
-        variant: "destructive",
-      });
       return;
     }
 
-    setLoading(true);
     try {
-      const response = await apiService.login({ email, password });
-      console.log('Login response:', response);
-      
-      toast({
-        title: "Успешный вход",
-        description: "Добро пожаловать!",
-      });
-      
+      await login({ email, password });
       onAuthSuccess();
-    } catch (error: any) {
-      toast({
-        title: "Ошибка входа",
-        description: error.message || "Неверный email или пароль",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      // Ошибка уже обработана в хуке
     }
   };
 

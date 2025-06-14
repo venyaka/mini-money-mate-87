@@ -5,8 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Wallet, Eye, EyeOff } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { apiService } from '@/services/apiService';
+import { useSpringAuth } from '@/hooks/useSpringAuth';
 
 interface RegisterFormProps {
   onRegistrationSuccess: () => void;
@@ -21,8 +20,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistrationSuccess, onSw
     password: '',
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const { toast } = useToast();
+  const { register, loading } = useSpringAuth();
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -32,32 +30,14 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistrationSuccess, onSw
     e.preventDefault();
     
     if (!formData.name || !formData.surname || !formData.email || !formData.password) {
-      toast({
-        title: "Ошибка",
-        description: "Заполните все поля",
-        variant: "destructive",
-      });
       return;
     }
 
-    setLoading(true);
     try {
-      await apiService.register(formData);
-      
-      toast({
-        title: "Регистрация успешна",
-        description: "Аккаунт создан. Теперь вы можете войти.",
-      });
-      
+      await register(formData);
       onRegistrationSuccess();
-    } catch (error: any) {
-      toast({
-        title: "Ошибка регистрации",
-        description: error.message || "Произошла ошибка при регистрации",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      // Ошибка уже обработана в хуке
     }
   };
 
