@@ -1,34 +1,33 @@
-
-# Build stage
-FROM node:18-alpine as build
+# 🔨 Build stage
+FROM node:18-alpine AS build
 
 WORKDIR /app
 
-# Copy package files
+# Копируем package.json и package-lock.json
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Устанавливаем ВСЕ зависимости (включая dev-зависимости, чтобы vite был доступен)
+RUN npm install
 
-# Copy source code
+# Копируем остальной код
 COPY . .
 
-# Build the application
+# Собираем проект
 RUN npm run build
 
-# Production stage
+# 🚀 Production stage
 FROM node:18-alpine
 
 WORKDIR /app
 
-# Install serve globally
+# Устанавливаем минимальный сервер
 RUN npm install -g serve
 
-# Copy built assets from build stage
+# Копируем собранный фронт из build stage
 COPY --from=build /app/dist ./dist
 
-# Expose port 5173
+# Открываем порт
 EXPOSE 5173
 
-# Start serve
+# Запуск через serve
 CMD ["serve", "-s", "dist", "-l", "5173"]
