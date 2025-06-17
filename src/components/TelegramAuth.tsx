@@ -21,7 +21,7 @@ const TelegramAuth: React.FC<TelegramAuthProps> = ({ onAuthSuccess, onSwitchToLo
     window.onTelegramAuth = (user: any) => {
       const API_BASE_URL_PROD = 'https://sergofinance.com';
       const path = "http://localhost:8181";
-      const authorizeProcessingUrl = "/api/authorize/login-by-telegram";
+      const authorizeProcessingUrl = "/api/authorize/login";
       
       fetch((API_BASE_URL_PROD + authorizeProcessingUrl), {
         method: 'POST',

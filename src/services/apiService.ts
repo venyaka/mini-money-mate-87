@@ -53,7 +53,7 @@ class ApiService {
 
   // Auth
   async loginByTelegram(credentials: TelegramAuthorizeReqDTO): Promise<{ redirectUrl: string }> {
-    return this.request('/api/authorize/login-by-telegram', {
+    return this.request('/api/authorize/login', {
       method: 'POST',
       body: JSON.stringify(credentials),
     });
