@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Calendar, Wallet } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -11,8 +10,10 @@ import Calculator from '@/components/Calculator';
 import IncomeExpenseButtons from '@/components/IncomeExpenseButtons';
 import { useSpringAuth } from '@/hooks/useSpringAuth';
 import { useSpringFinances } from '@/hooks/useSpringFinances';
+import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
+  const navigate = useNavigate();
   const { user, loading: authLoading, logout } = useSpringAuth();
   const [showCalculator, setShowCalculator] = useState(false);
   const [transactionType, setTransactionType] = useState<'income' | 'expense'>('income');
@@ -21,6 +22,7 @@ const Index = () => {
 
   const handleAuthSuccess = () => {
     // Пользователь будет обновлен автоматически через хук
+    navigate('/');
   };
 
   const handleLogout = () => {

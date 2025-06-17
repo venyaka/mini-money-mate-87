@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Wallet, Eye, EyeOff } from 'lucide-react';
 import { useSpringAuth } from '@/hooks/useSpringAuth';
+import { toast } from '@/components/ui/use-toast';
 
 interface RegisterFormProps {
   onRegistrationSuccess: () => void;
@@ -35,6 +35,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistrationSuccess, onSw
 
     try {
       await register(formData);
+      toast({
+        title: 'Проверьте почту',
+        description: 'На ваш email отправлена ссылка для подтверждения. Перейдите по ней для активации аккаунта.',
+        variant: 'success',
+      });
       // Редирект на страницу логина после успешной регистрации
       onSwitchToLogin();
     } catch (error) {
