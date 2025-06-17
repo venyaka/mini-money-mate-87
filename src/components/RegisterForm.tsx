@@ -35,7 +35,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onRegistrationSuccess, onSw
 
     try {
       await register(formData);
-      // Редирект на страницу логина после успешной регистрации
+      // После успешной регистрации переключаемся на форму логина
       onSwitchToLogin();
     } catch (error) {
       // Ошибка уже обработана в хуке
