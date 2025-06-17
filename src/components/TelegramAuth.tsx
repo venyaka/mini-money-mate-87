@@ -85,15 +85,15 @@ const TelegramAuth: React.FC<TelegramAuthProps> = ({ onAuthSuccess, onSwitchToLo
               {/* Сюда будет вставлен Telegram Widget */}
             </div>
 
-            <div className="mt-6">
-              <Button
-                variant="ghost"
-                className="w-full text-gray-400 hover:text-white"
-                onClick={onSwitchToLogin}
-              >
-                Войти по логину и паролю
-              </Button>
-            </div>
+            {/*<div className="mt-6">*/}
+            {/*  <Button*/}
+            {/*    variant="ghost"*/}
+            {/*    className="w-full text-gray-400 hover:text-white"*/}
+            {/*    onClick={onSwitchToLogin}*/}
+            {/*  >*/}
+            {/*    Войти по логину и паролю*/}
+            {/*  </Button>*/}
+            {/*</div>*/}
           </div>
         </Card>
       </div>
