@@ -23,12 +23,12 @@ export interface BalanceDTO {
     amount: number;
 }
 
-export type TransactionType = 'INCOME' | 'EXPENSE'; // или дополни по enum из бэка
+export type TransactionType = 'INCOME' | 'EXPENSE'; // РёР»Рё РґРѕРїРѕР»РЅРё РїРѕ enum РёР· Р±СЌРєР°
 
 export interface TransactionDTO {
     type: TransactionType;
     amount: number;
-    date?: string; // ISO-строка, например: '2025-06-04'
+    date?: string; // ISO-СЃС‚СЂРѕРєР°, РЅР°РїСЂРёРјРµСЂ: '2025-06-04'
 }
 
 export interface Transaction {

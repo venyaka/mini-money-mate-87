@@ -6,18 +6,18 @@ interface GoogleAuthProps {
 }
 
 const GoogleAuth: React.FC<GoogleAuthProps> = ({ onAuthSuccess }) => {
-  // Проверяем, есть ли code в URL (редирект от Google)
+  // РџСЂРѕРІРµСЂСЏРµРј, РµСЃС‚СЊ Р»Рё code РІ URL (СЂРµРґРёСЂРµРєС‚ РѕС‚ Google)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
     if (code) {
       apiService.loginWithGoogle(code)
-        .then(() => {
-          onAuthSuccess();
-        })
-        .catch(() => {
-          // Можно добавить обработку ошибок
-        });
+          .then(() => {
+            onAuthSuccess();
+          })
+          .catch(() => {
+            // РњРѕР¶РЅРѕ РґРѕР±Р°РІРёС‚СЊ РѕР±СЂР°Р±РѕС‚РєСѓ РѕС€РёР±РѕРє
+          });
     }
   }, [onAuthSuccess]);
 
@@ -27,14 +27,14 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({ onAuthSuccess }) => {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-4">
-      <button
-        className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 shadow"
-        onClick={handleGoogleLogin}
-      >
-        Войти через Google
-      </button>
-    </div>
+      <div className="flex flex-col items-center space-y-4">
+        <button
+            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 shadow"
+            onClick={handleGoogleLogin}
+        >
+          Р’РѕР№С‚Рё С‡РµСЂРµР· Google
+        </button>
+      </div>
   );
 };
 
