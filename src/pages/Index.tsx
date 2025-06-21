@@ -12,13 +12,57 @@ import { useSpringAuth } from '@/hooks/useSpringAuth';
 import { useSpringFinances } from '@/hooks/useSpringFinances';
 import { useNavigate } from 'react-router-dom';
 
+const mode = "prod";
+
+// Тестовые данные пользователя и транзакций для режима разработки
+const devUser = {
+  id: 1,
+  firstName: 'Тест',
+  lastName: 'Пользователь',
+  username: 'testuser',
+  photoUrl: '',
+};
+
+const devTransactions = [
+  {
+    id: 1,
+    userId: 1,
+    amount: 1500,
+    type: 'income',
+    date: '2025-06-01',
+  },
+  {
+    id: 2,
+    userId: 1,
+    amount: 500,
+    type: 'expense',
+    date: '2025-06-02',
+  },
+  {
+    id: 3,
+    userId: 1,
+    amount: 2000,
+    type: 'income',
+    date: '2025-06-03',
+  },
+  {
+    id: 4,
+    userId: 1,
+    amount: 700,
+    type: 'expense',
+    date: '2025-06-04',
+  },
+];
+
 const Index = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading, logout } = useSpringAuth();
   const [showCalculator, setShowCalculator] = useState(false);
   const [transactionType, setTransactionType] = useState<'income' | 'expense'>('income');
+  const [devMode, setDevMode] = useState(false);
+  const [transactions, setTransactions] = useState(devTransactions);
 
-  const { balance, transactions, addTransaction } = useSpringFinances(user?.id);
+  const { balance, transactions: userTransactions, addTransaction } = useSpringFinances(user?.id);
 
   const handleAuthSuccess = () => {
     // Пользователь будет обновлен автоматически через хук
@@ -40,6 +84,18 @@ const Index = () => {
   };
 
   const handleAmountSet = (amount: number) => {
+    if (devMode) {
+      const newTransaction = {
+        id: transactions.length + 1,
+        userId: devUser.id,
+        amount,
+        type: transactionType,
+        date: new Date().toISOString().slice(0, 10),
+      };
+      setTransactions([newTransaction, ...transactions]);
+      setShowCalculator(false);
+      return;
+    }
     addTransaction(amount, transactionType);
     setShowCalculator(false);
   };
@@ -59,16 +115,30 @@ const Index = () => {
     );
   }
 
-  if (!user) {
-    return <AuthContainer onAuthSuccess={handleAuthSuccess} />;
+  if (!user && !devMode) {
+    return (
+      <div className="relative min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center">
+        <AuthContainer onAuthSuccess={handleAuthSuccess} />
+        <button
+          className="fixed top-4 right-4 px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 shadow-lg z-50"
+          onClick={() => setDevMode(true)}
+        >
+          Войти в тестовый режим
+        </button>
+      </div>
+    );
   }
 
-  const displayName = user.firstName && user.lastName 
-    ? `${user.firstName} ${user.lastName}` 
-    : user.username || 'Пользователь';
+  const displayName = user?.firstName && user?.lastName
+    ? `${user.firstName} ${user.lastName}`
+    : user?.username || 'Пользователь';
+
+  // если devMode, используем devUser и devTransactions
+  const currentUser = devMode ? devUser : user;
+  const currentTransactions = devMode ? transactions : userTransactions;
 
   // Приводим транзакции к нужному формату для TransactionHistory
-  const formattedTransactions = transactions.map(transaction => ({
+  const formattedTransactions = currentTransactions.map(transaction => ({
     id: transaction.id!,
     type: transaction.type === 'INCOME' ? 'income' : 'expense',
     amount: transaction.amount,
@@ -85,15 +155,15 @@ const Index = () => {
         {/* User Profile Header */}
         <UserProfile 
           user={{
-            ...user,
+            ...currentUser,
             user_metadata: { name: displayName },
-            email: user.username
+            email: currentUser.username
           }}
           onLogout={handleLogout}
         />
 
         {/* Balance Section */}
-        <BalanceCard balance={balance} />
+        <BalanceCard balance={devMode ? transactions.reduce((acc, t) => acc + (t.type === 'income' ? t.amount : -t.amount), 0) : balance} />
 
         {/* Quick Amount Selection */}
         <QuickAmounts onAmountSelect={handleQuickAmountSelect} />
@@ -115,9 +185,9 @@ const Index = () => {
             </TabsList>
             
             <TabsContent value="history" className="mt-6">
-              {/*<div className="max-h-96 overflow-y-auto">*/}
-              {/*  <TransactionHistory transactions={formattedTransactions} />*/}
-              {/*</div>*/}
+              <div className="max-h-96 overflow-y-auto">
+                <TransactionHistory transactions={formattedTransactions} />
+              </div>
             </TabsContent>
           </Tabs>
         </div>
