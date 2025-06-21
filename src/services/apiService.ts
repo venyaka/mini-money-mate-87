@@ -1,4 +1,3 @@
-
 import { UserRespDTO, BalanceDTO, TransactionDTO, TelegramAuthorizeReqDTO, Transaction, UserAuthorizeReqDTO, RegisterReqDTO, TokenRespDTO, ApiError } from '@/types/api';
 import { API_ROUTES } from '@/constants/apiRoutes';
 
@@ -144,6 +143,23 @@ class ApiService {
   logout(): void {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
+  }
+
+  // Получить ссылку для Google OAuth
+  async getGoogleAuthUrl(): Promise<{ url: string }> {
+    return this.request('/api/auth/google/url');
+  }
+
+  // Обработать callback от Google (получить токены по коду)
+  async loginWithGoogle(code: string): Promise<TokenRespDTO> {
+    const response = await this.request<TokenRespDTO>(`/api/auth/google/callback?code=${encodeURIComponent(code)}`);
+    if (response.accessToken) {
+      localStorage.setItem('accessToken', response.accessToken);
+    }
+    if (response.refreshToken) {
+      localStorage.setItem('refreshToken', response.refreshToken);
+    }
+    return response;
   }
 }
 
